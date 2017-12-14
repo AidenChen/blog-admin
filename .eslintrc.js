@@ -49,5 +49,7 @@ module.exports = {
     'no-console': 'off',
     'comma-dangle': [2, 'never'],
     'arrow-parens': 'off',
+    'max-len': 'off',
+    'no-param-reassign': 'off',
   }
 }

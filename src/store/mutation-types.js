@@ -1,3 +1,17 @@
 // auth
 export const CREATE_TOKEN = 'CREATE_TOKEN';
 export const DELETE_TOKEN = 'DELETE_TOKEN';
+// article
+export const CREATE_ARTICLE = 'CREATE_ARITCLE';
+export const DESTROY_ARTICLE = 'DESTROY_ARTICLE';
+export const UPDATE_ARTICLE = 'UPDATE_ARTICLE';
+export const INDEX_ARTICLE = 'INDEX_ARTICLE';
+export const SHOW_CURRENT_ARTICLE = 'SHOW_CURRENT_ARTICLE';
+// tag
+export const CREATE_TAG = 'CREATE_TAG';
+export const DESTROY_TAG = 'DESTROY_TAG';
+export const UPDATE_TAG = 'UPDATE_TAG';
+export const INDEX_TAG = 'INDEX_TAG';
+export const DESTROY_CURRENT_TAG = 'DESTROY_CURRENT_TAG';
+export const TOGGLE_SELECT_TAG = 'TOGGLE_SELECT_TAG';
+export const CLEAR_SELECT_TAG = 'CLEAR_SELECT_TAG';
