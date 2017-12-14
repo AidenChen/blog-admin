@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Axios from 'axios';
-import { Message } from 'element-ui';
+import { Message, MessageBox } from 'element-ui';
 import App from './App';
 import router from './router';
 import store from './store';
@@ -24,15 +24,16 @@ Vue.prototype.$message.error = (err) => {
   const option = {
     message: err,
     duration: 2000,
-    type: 'error',
+    type: 'error'
   };
   return Message(option);
 };
+Vue.prototype.$messageBox = MessageBox;
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   render: h => h(App),
-  store,
+  store
 });

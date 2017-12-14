@@ -2,7 +2,7 @@ import * as types from '../mutation-types';
 import auth from '../../api/auth';
 
 const state = {
-  token: sessionStorage.getItem('blog-admin-token'),
+  token: sessionStorage.getItem('blog-admin-token')
 };
 
 const actions = {
@@ -18,7 +18,7 @@ const actions = {
           resolve(res);
         });
       });
-  },
+  }
 };
 
 const mutations = {
@@ -29,11 +29,11 @@ const mutations = {
   [types.DELETE_TOKEN](state) {
     state.token = null;
     sessionStorage.setItem('blog-admin-token', '');
-  },
+  }
 };
 
 export default {
   state,
   actions,
-  mutations,
+  mutations
 };

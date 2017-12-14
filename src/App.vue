@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'app',
+  name: 'app'
 };
 </script>
 
@@ -22,18 +22,20 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 
-  .fade-enter-active, .fade-leave-active {
+  .fade-enter-active,
+  .fade-leave-active {
     transition: all 0.5s;
   }
-      
-  .fade-enter, .fade-leave-active {
+
+  .fade-enter,
+  .fade-leave-active {
     opacity: 0;
   }
-      
+
   .fade-enter {
     transform: translateX(50px);
   }
-    
+
   .fade-leave-active {
     transform: translateX(-50px);
   }
