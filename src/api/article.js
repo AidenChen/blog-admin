@@ -14,7 +14,6 @@ export default {
     return Axios.delete(`/api/articles/${id}`);
   },
   update(id, article) {
-    console.log(article);
     return Axios.put(`/api/articles/${id}`, article);
   },
   index(tags = '', index = 1, size = 10) {
@@ -22,5 +21,11 @@ export default {
   },
   show(id) {
     return Axios.get(`/api/articles/${id}`);
+  },
+  publishArticle(id) {
+    return Axios.put(`/api/articles/${id}`, { is_published: true });
+  },
+  withdrawArticle(id) {
+    return Axios.put(`/api/articles/${id}`, { is_published: false });
   }
 };

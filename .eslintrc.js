@@ -54,5 +54,8 @@ module.exports = {
     'no-plusplus': 'off',
     'no-lonely-if': 'off',
     'no-underscore-dangle': 'off',
+    'func-names': 'off',
+    'no-bitwise': 'off',
+    'consistent-return': 'off',
   }
 }

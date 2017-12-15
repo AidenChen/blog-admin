@@ -56,9 +56,9 @@ const actions = {
       });
     });
   },
-  updateArticle({ commit, state }, { id, article }) {
-    return article.update(id, article).then(res => {
-      commit(types.UPDATE_ARTICLE, { id, article });
+  updateArticle({ commit, state }, { id, article: data }) {
+    return article.update(id, data).then(res => {
+      commit(types.UPDATE_ARTICLE, { id, article: data });
       return new Promise((resolve) => {
         resolve(res);
       });
@@ -98,6 +98,25 @@ const actions = {
       };
     }
     commit(types.SHOW_CURRENT_ARTICLE, article);
+  },
+  publishArticle({ commit, state }, { id }) {
+    return article.publishArticle(id).then(res => {
+      commit(types.PUBLISH_ARTICLE, id);
+      return new Promise((resolve) => {
+        resolve(res);
+      });
+    });
+  },
+  withdrawArticle({ commit, state }, { id }) {
+    return article.withdrawArticle(id).then(res => {
+      commit(types.WITHDRAW_ARTICLE, id);
+      return new Promise((resolve) => {
+        resolve(res);
+      });
+    });
+  },
+  articleChanged({ commit }) {
+    commit(types.ARTICLE_CHANGED);
   },
   createTag({ commit, state }, { name }) {
     return tag.create(name).then(res => {
@@ -167,6 +186,17 @@ const mutations = {
   },
   [types.SHOW_CURRENT_ARTICLE](state, article) {
     state.currentArticle = article;
+  },
+  [types.PUBLISH_ARTICLE](state, id) {
+    state.currentArticle.is_published = true;
+    state.articleList.find(p => p.id === id).is_published = true;
+  },
+  [types.WITHDRAW_ARTICLE](state, id) {
+    state.currentArticle.is_published = false;
+    state.articleList.find(p => p.id === id).is_published = false;
+  },
+  [types.ARTICLE_CHANGED](state) {
+    state.currentArticle.save = false;
   },
   [types.CREATE_TAG](state, tag) {
     state.currentArticle.tags.push(tag);

@@ -1,29 +1,29 @@
 <template>
   <div class="list">
     <div class="list__top-title">
-      <i class="fa fa-tags" aria-hidden="true"></i>&nbsp;标签
+      <i class="fa fa-tags" aria-hidden="true"/>&nbsp;标签
     </div>
     <ul class="list__tag">
       <li v-for="tag in tagList" @click="toggleSelectFn(tag.id)" class="list__tag__item" :class="{ 'list__tag__item--active': selectTagArr.includes(tag.id)}">
-        <i class="fa fa-tag" aria-hidden="true"></i>&nbsp;&nbsp;
-        <span>{{tag.name}}</span>
-        <i class="fa fa-trash-o" aria-hidden="true" @click.stop="deleteTagFn(tag.id)"></i>
+        <i class="fa fa-tag" aria-hidden="true"/>&nbsp;&nbsp;
+        <span>{{ tag.name }}</span>
+        <i class="fa fa-trash-o" aria-hidden="true" @click.stop="destroyTagFn(tag.id)"/>
       </li>
     </ul>
     <ul class="list__article">
-      <li @click="createArticle" class="list__article__button"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;新建文章</li>
+      <li @click="createArticle" class="list__article__button"><i class="fa fa-plus" aria-hidden="true"/>&nbsp;新建文章</li>
       <li v-for="(article, index) in articleList" @click="switchArticle(index)" class="list__article__item" :class="{'list__article__item--active': currentArticle.index == index}">
-        <h1 class="list__article__item__title">{{ article.title | cutTitle}}</h1>
+        <h1 class="list__article__item__title">{{ article.title | cutTitle }}</h1>
         <div class="list__article__item__info">
-          <i class="fa fa-tag" aria-hidden="true"></i>
+          <i class="fa fa-tag" aria-hidden="true"/>
           <span v-for="tag in article.tags"> {{tag.name}}</span>
-          <p class="list__article__item__createTime"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; {{article.created_at}}</p>
+          <p class="list__article__item__createTime"><i class="fa fa-calendar" aria-hidden="true"/>&nbsp; {{ article.created_at }}</p>
           <p class="list__article__item__publish" v-if="article.is_published">
             已发布
           </p>
         </div>
       </li>
-      <paginator :curPage='curPage' :total='total' @changePage='changePage'></paginator>
+      <paginator :curPage='curPage' :total='total' @changePage='changePage'/>
     </ul>
   </div>
 </template>
@@ -82,7 +82,7 @@ export default {
       this.showCurrentArticle(-1);
     },
     destroyArticle() {
-      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+      this.$messageBox.confirm('此操作将永久删除该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -90,7 +90,7 @@ export default {
         .then(() => {
           this.$store
             .dispatch('destroyArticle', {
-              id: this.currentArticle._id,
+              id: this.currentArticle.id,
               index: this.currentArticle.index
             })
             .then(() => {
@@ -106,7 +106,7 @@ export default {
         .catch(() => {});
     },
     destroyTagFn(id) {
-      this.$confirm('此操作将永久删除该标签, 是否继续?', '提示', {
+      this.$messageBox.confirm('此操作将永久删除该标签, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -142,8 +142,6 @@ export default {
   },
   watch: {
     selectTagArr(val) {
-      console.log(val);
-      console.log('change selectTagArr');
       this.indexArticle({
         tags: val
       });

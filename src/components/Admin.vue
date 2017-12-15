@@ -1,26 +1,26 @@
 <template>
   <div class="admin">
     <div class="admin__list">
-      <list></list>
+      <list/>
     </div>
-    <!-- <div class="admin__editor">
-      <editor></editor>
-    </div> -->
+    <div class="admin__editor">
+      <editor/>
+    </div>
     <div class="admin__logout">
-      <i class="fa fa-power-off" aria-hidden="true" @click="logout"></i>
+      <i class="fa fa-power-off" aria-hidden="true" @click="logout"/>
     </div>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex';
-// import Editor from './Editor.vue';
+import Editor from './Editor';
 import List from './List';
 
 export default {
   name: 'Admin',
   components: {
-    // Editor,
+    Editor,
     List
   },
   data() {
