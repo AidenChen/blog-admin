@@ -1,12 +1,12 @@
 <template>
-  <ul class="pagination">
-    <li class="pagination__button" @click="prevPage">
+  <ul class="paginator">
+    <li class="paginator__button" @click="prevPage">
       <
     </li>
-    <li class="pagination__item" v-for="page in pageArr" @click="switchPage(page)" :class="{'pagination__item--active':page==curPage}">
+    <li class="paginator__item" v-for="page in pageArr" @click="switchPage(page)" :class="{'paginator__item--active':page==curPage}">
       {{page}}
     </li>
-    <li class="pagination__button" @click="nextPage">
+    <li class="paginator__button" @click="nextPage">
       >
     </li>
   </ul>
@@ -14,42 +14,42 @@
 
 <script>
 export default {
-  name: 'pagination',
+  name: 'Paginator',
   data() {
     return {};
   },
   computed: {
     pageArr() {
-      let arr = [];
-      if (this.allPage <= 7) {
-        //1 2 3 4 5 6 7
-        for (let i = 1; i <= this.allPage; i++) {
+      const arr = [];
+      if (this.total <= 7) {
+        // 1 2 3 4 5 6 7
+        for (let i = 1; i <= this.total; i++) {
           arr.push(i);
         }
       } else {
         if (this.curPage - 1 < 3) {
-          //1 2 3 4 ... allpage
+          // 1 2 3 4 ... total
           for (let i = 1; i <= this.curPage + 1; i++) {
             arr.push(i);
           }
           arr.push('...');
-          arr.push(this.allPage);
-        } else if (this.allPage - this.curPage < 3) {
+          arr.push(this.total);
+        } else if (this.total - this.curPage < 3) {
           // 1 ... 34 35 36 37
           arr.push(1);
           arr.push('...');
-          for (let i = this.curPage - 1; i <= this.allPage; i++) {
+          for (let i = this.curPage - 1; i <= this.total; i++) {
             arr.push(i);
           }
         } else {
-          //1 ... 3 4 5 ... 37
+          // 1 ... 3 4 5 ... 37
           arr.push(1);
           arr.push('...');
           arr.push(this.curPage - 1);
           arr.push(this.curPage);
           arr.push(this.curPage + 1);
           arr.push('...');
-          arr.push(this.allPage);
+          arr.push(this.total);
         }
       }
       return arr;
@@ -60,7 +60,7 @@ export default {
       type: Number,
       required: true
     },
-    allPage: {
+    total: {
       type: Number,
       required: true
     }
@@ -73,13 +73,13 @@ export default {
       this.$emit('changePage', this.curPage - 1);
     },
     nextPage() {
-      if (this.curPage >= this.allPage) {
+      if (this.curPage >= this.total) {
         return;
       }
       this.$emit('changePage', this.curPage + 1);
     },
     switchPage(page) {
-      if (page == '...') {
+      if (page === '...') {
         return;
       }
       console.log(page);

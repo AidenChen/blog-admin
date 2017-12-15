@@ -51,5 +51,8 @@ module.exports = {
     'arrow-parens': 'off',
     'max-len': 'off',
     'no-param-reassign': 'off',
+    'no-plusplus': 'off',
+    'no-lonely-if': 'off',
+    'no-underscore-dangle': 'off',
   }
 }

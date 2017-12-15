@@ -1,9 +1,9 @@
 <template>
   <div class="admin">
-    <!-- <div class="admin__list">
+    <div class="admin__list">
       <list></list>
     </div>
-    <div class="admin__editor">
+    <!-- <div class="admin__editor">
       <editor></editor>
     </div> -->
     <div class="admin__logout">
@@ -13,16 +13,16 @@
 </template>
 
 <script>
-// import Editor from './Editor.vue';
-// import List from './List.vue';
 import { mapMutations } from 'vuex';
+// import Editor from './Editor.vue';
+import List from './List';
 
 export default {
   name: 'Admin',
-  // components: {
-  //   Editor,
-  //   List
-  // },
+  components: {
+    // Editor,
+    List
+  },
   data() {
     return {};
   },
