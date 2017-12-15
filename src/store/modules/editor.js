@@ -66,7 +66,7 @@ const actions = {
   },
   indexArticle({ commit, state, dispatch }, { tags = '', index = 1, size = 10 } = {}) {
     return article.index(tags, index, size).then(res => {
-      commit(types.INDEX_ARTICLE, { articleList: res.data.data.items, total: res.data.data.total, curPage: index });
+      commit(types.INDEX_ARTICLE, { articleList: res.data.data.items, total: Math.ceil(res.data.data.total / size), curPage: index });
       dispatch('showCurrentArticle', 0);
       return new Promise((resolve) => {
         resolve(res);
