@@ -277,6 +277,8 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../assets/scss/preview.scss';
+
 .editor-box {
   position: relative;
   padding: 15px;
