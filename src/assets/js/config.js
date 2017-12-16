@@ -1,3 +1,3 @@
 export default {
-  baseUri: 'http://localhost:3000'
+  baseUri: 'http://aidenchen.me:3000'
 };
