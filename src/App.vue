@@ -20,10 +20,6 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 
-  ul {
-    padding: 0;
-  }
-
   li {
     box-sizing: border-box;
   }

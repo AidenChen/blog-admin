@@ -153,6 +153,10 @@ export default {
 <style lang="scss">
 .list {
   padding: 15px;
+
+  ul {
+    padding: 0;
+  }
 }
 
 .list__top-title {
