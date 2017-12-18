@@ -22,10 +22,10 @@ export default {
   show(id) {
     return Axios.get(`/api/articles/${id}`);
   },
-  publishArticle(id) {
+  publish(id) {
     return Axios.put(`/api/articles/${id}`, { is_published: true });
   },
-  withdrawArticle(id) {
+  withdraw(id) {
     return Axios.put(`/api/articles/${id}`, { is_published: false });
   }
 };

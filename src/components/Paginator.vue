@@ -82,7 +82,6 @@ export default {
       if (page === '...') {
         return;
       }
-      console.log(page);
       // 触发父组件的changePage方法，实现从父组件再修改props,单向数据流
       this.$emit('changePage', page);
     }

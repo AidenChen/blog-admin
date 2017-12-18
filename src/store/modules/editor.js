@@ -1,6 +1,6 @@
 import * as types from '../mutation-types';
-import article from '../../api/article';
-import tag from '../../api/tag';
+import articleApi from '../../api/article';
+import tagApi from '../../api/tag';
 
 const state = {
   articleList: [],
@@ -30,15 +30,14 @@ const getters = {
 
 const actions = {
   createArticle({ commit, state }, { title, content, is_published, tags }) {
-    return article.create(title, content, is_published, tags).then(res => {
-      console.log(res.data);
-      return new Promise((resolve) => {
+    return articleApi
+      .create(title, content, is_published, tags)
+      .then(res => new Promise((resolve) => {
         resolve(res);
-      });
-    });
+      }));
   },
   destroyArticle({ commit, state }, { id }) {
-    return article.destroy(id).then(res => {
+    return articleApi.destroy(id).then(res => {
       if (state.articleList.length <= 1) {
         const article = {
           id: -1,
@@ -56,16 +55,16 @@ const actions = {
       });
     });
   },
-  updateArticle({ commit, state }, { id, article: data }) {
-    return article.update(id, data).then(res => {
-      commit(types.UPDATE_ARTICLE, { id, article: data });
+  updateArticle({ commit, state }, { id, article }) {
+    return articleApi.update(id, article).then(res => {
+      commit(types.UPDATE_ARTICLE);
       return new Promise((resolve) => {
         resolve(res);
       });
     });
   },
   indexArticle({ commit, state, dispatch }, { tags = '', index = 1, size = 10 } = {}) {
-    return article.index(tags, index, size).then(res => {
+    return articleApi.index(tags, index, size).then(res => {
       commit(types.INDEX_ARTICLE, { articleList: res.data.data.items, total: Math.ceil(res.data.data.total / size), curPage: index });
       dispatch('showCurrentArticle', 0);
       return new Promise((resolve) => {
@@ -75,7 +74,6 @@ const actions = {
   },
   showCurrentArticle({ commit, state }, index) {
     let article;
-    console.log('currentIndex: ', index);
     if (state.articleList.length === 0 || index === -1) {
       article = {
         id: -1,
@@ -100,7 +98,7 @@ const actions = {
     commit(types.SHOW_CURRENT_ARTICLE, article);
   },
   publishArticle({ commit, state }, { id }) {
-    return article.publishArticle(id).then(res => {
+    return articleApi.publish(id).then(res => {
       commit(types.PUBLISH_ARTICLE, id);
       return new Promise((resolve) => {
         resolve(res);
@@ -108,7 +106,7 @@ const actions = {
     });
   },
   withdrawArticle({ commit, state }, { id }) {
-    return article.withdrawArticle(id).then(res => {
+    return articleApi.withdraw(id).then(res => {
       commit(types.WITHDRAW_ARTICLE, id);
       return new Promise((resolve) => {
         resolve(res);
@@ -119,7 +117,7 @@ const actions = {
     commit(types.ARTICLE_CHANGED);
   },
   createTag({ commit, state }, { name }) {
-    return tag.create(name).then(res => {
+    return tagApi.create(name).then(res => {
       commit(types.CREATE_TAG, res.data.data);
       return new Promise((resolve) => {
         resolve(res);
@@ -127,7 +125,7 @@ const actions = {
     });
   },
   destroyTag({ commit, state }, { id }) {
-    return tag.destroy(id).then(res => {
+    return tagApi.destroy(id).then(res => {
       commit(types.DESTROY_TAG, id);
       return new Promise((resolve) => {
         resolve(res);
@@ -135,7 +133,7 @@ const actions = {
     });
   },
   updateTag({ commit, state }, { id, name }) {
-    return tag.update(id, name).then(res => {
+    return tagApi.update(id, name).then(res => {
       commit(types.UPDATE_TAG, { id, name });
       return new Promise((resolve) => {
         resolve(res);
@@ -143,7 +141,7 @@ const actions = {
     });
   },
   indexTag({ commit }) {
-    return tag.index().then(res => {
+    return tagApi.index().then(res => {
       commit(types.INDEX_TAG, res.data.data.items);
       return new Promise((resolve) => {
         resolve(res);
@@ -175,8 +173,7 @@ const mutations = {
     state.currentArticle.index = index;
     state.currentArticle.save = true;
   },
-  [types.UPDATE_ARTICLE](state, { id, article }) {
-    console.log(id, article);
+  [types.UPDATE_ARTICLE](state) {
     state.currentArticle.save = true;
   },
   [types.INDEX_ARTICLE](state, { articleList, total, curPage }) {
