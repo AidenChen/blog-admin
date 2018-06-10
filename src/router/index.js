@@ -11,16 +11,16 @@ export default new Router({
     {
       path: '/',
       name: 'Admin',
-      component: Admin
+      component: Admin,
     },
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
     },
     {
       path: '*',
-      redirect: '/'
-    }
-  ]
+      redirect: '/',
+    },
+  ],
 });

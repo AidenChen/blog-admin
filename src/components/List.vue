@@ -4,48 +4,64 @@
       <i class="fa fa-tags" aria-hidden="true"/>&nbsp;标签
     </div>
     <ul class="list__tag">
-      <li v-for="tag in tagList" @click="toggleSelectFn(tag.id)" class="list__tag__item" :class="{ 'list__tag__item--active': selectTagArr.includes(tag.id)}">
+      <li v-for="(tag, index) in tagList" :key="index"
+          @click="toggleSelectFn(tag.id)" class="list__tag__item"
+          :class="{ 'list__tag__item--active': selectTagArr.includes(tag.id)}"
+      >
         <i class="fa fa-tag" aria-hidden="true"/>&nbsp;&nbsp;
         <span>{{ tag.name }}</span>
         <i class="fa fa-trash-o" aria-hidden="true" @click.stop="destroyTagFn(tag.id)"/>
       </li>
     </ul>
-    <ul class="list__article">
-      <li @click="createArticle" class="list__article__button"><i class="fa fa-plus" aria-hidden="true"/>&nbsp;新建文章</li>
-      <li v-for="(article, index) in articleList" @click="switchArticle(index)" class="list__article__item" :class="{'list__article__item--active': currentArticle.index == index}">
-        <h1 class="list__article__item__title">{{ article.title | cutTitle }}</h1>
-        <div class="list__article__item__info">
+    <ul class="list__post">
+      <li @click="createPost" class="list__post__button">
+        <i class="fa fa-plus" aria-hidden="true"/>&nbsp;新建文章
+      </li>
+      <li v-for="(post, index) in posts" :key="index"
+          @click="switchPost(index)" class="list__post__item"
+          :class="{'list__post__item--active': currentPost.index == index}"
+      >
+        <h1 class="list__post__item__title">{{ post.title | cutTitle }}</h1>
+        <div class="list__post__item__info">
           <i class="fa fa-tag" aria-hidden="true"/>
-          <span v-for="tag in article.tags"> {{tag.name}}</span>
-          <p class="list__article__item__createTime"><i class="fa fa-calendar" aria-hidden="true"/>&nbsp; {{ article.created_at }}</p>
-          <p class="list__article__item__publish" v-if="article.is_published">
+          <span v-for="(tag, index) in post.tags" :key="index"> {{tag.name}}</span>
+          <p class="list__post__item__createTime">
+            <i class="fa fa-calendar" aria-hidden="true"/>&nbsp; {{ post.created_at }}
+          </p>
+          <p class="list__post__item__publish" v-if="post.is_published">
             已发布
           </p>
         </div>
       </li>
-      <paginator :curPage='curPage' :total='total' @changePage='changePage'/>
+      <div class="post-paginator">
+        <f-paginator
+          :page-index="curPage"
+          :page-size="10"
+          :total="total"
+          :pager-length="3"
+          :layout="'pager'"
+          :background="true"
+          @page-changed="changePage"
+        />
+      </div>
     </ul>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import Paginator from './Paginator';
 
 export default {
   name: 'List',
   computed: {
     ...mapGetters([
-      'articleList',
+      'posts',
       'tagList',
-      'currentArticle',
+      'currentPost',
       'total',
       'curPage',
-      'selectTagArr'
-    ])
-  },
-  components: {
-    Paginator
+      'selectTagArr',
+    ]),
   },
   data() {
     return {};
@@ -56,97 +72,100 @@ export default {
         return `${value.substring(0, 24)}...`;
       }
       return value;
-    }
+    },
   },
   methods: {
     ...mapActions([
-      'indexArticle',
+      'indexPost',
       'indexTag',
-      'showCurrentArticle',
-      'destroyTag'
+      'showCurrentPost',
+      'destroyTag',
     ]),
     ...mapMutations({
-      toggleSelectTag: 'TOGGLE_SELECT_TAG'
+      toggleSelectTag: 'TOGGLE_SELECT_TAG',
     }),
     toggleSelectFn(id) {
       this.toggleSelectTag(id);
     },
-    switchArticle(index) {
-      if (!this.currentArticle.save) {
+    switchPost(index) {
+      if (!this.currentPost.save) {
         this.$message.error('请先保存当前文章');
         return;
       }
-      this.showCurrentArticle(index);
+      this.showCurrentPost(index);
     },
-    createArticle() {
-      this.showCurrentArticle(-1);
+    createPost() {
+      this.showCurrentPost(-1);
     },
-    destroyArticle() {
+    destroyPost() {
       this.$messageBox.confirm('此操作将永久删除该文章, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.$store
-            .dispatch('destroyArticle', {
-              id: this.currentArticle.id,
-              index: this.currentArticle.index
+            .dispatch('destroyPost', {
+              id: this.currentPost.id,
+              index: this.currentPost.index,
             })
             .then(() => {
               this.$message({
                 message: '删除成功',
-                type: 'success'
+                type: 'success',
               });
             })
-            .catch(err => {
+            .catch((err) => {
               this.$message.error(err.response.data.message);
             });
         })
-        .catch(() => {});
+        .catch(() => {
+        });
     },
     destroyTagFn(id) {
       this.$messageBox.confirm('此操作将永久删除该标签, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.destroyTag({
-            id
+            id,
           })
             .then(() => {
               this.$message({
                 message: '删除成功',
-                type: 'success'
+                type: 'success',
               });
             })
-            .catch(err => {
+            .catch((err) => {
               this.$message.error(err.response.data.message);
             });
         })
-        .catch(() => {});
+        .catch(() => {
+        });
     },
     changePage(cur) {
-      this.indexArticle({
+      this.indexPost({
         index: cur,
-        tags: this.selectTagArr
+        tags: this.selectTagArr,
       }).then(() => {
-        this.showCurrentArticle(0);
+        this.showCurrentPost(0);
       });
-    }
+    },
   },
   mounted() {
-    this.indexArticle().then(() => {});
+    this.indexPost().then(() => {
+    });
     this.indexTag();
   },
   watch: {
     selectTagArr(val) {
-      this.indexArticle({
-        tags: val
+      this.indexPost({
+        tags: val,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -197,23 +216,23 @@ export default {
   background-color: #FF8400;
 }
 
-.list__article {
+.list__post {
   margin-top: 5px;
   list-style: none;
 }
 
-.list__article__item__title {
+.list__post__item__title {
   font-size: 22px;
 }
 
-.list__article__button {
+.list__post__button {
   padding: 10px;
   font-size: 25px;
   color: #0288d1;
   cursor: pointer;
 }
 
-.list__article__item {
+.list__post__item {
   position: relative;
   width: 100%;
   height: 100px;
@@ -223,29 +242,33 @@ export default {
   cursor: pointer;
 }
 
-.list__article__item--active {
+.list__post__item--active {
   border-left: 10px solid #0288d1;
 }
 
-.list__article__item__info {
+.list__post__item__info {
   position: absolute;
   bottom: 5px;
   right: 15px;
   text-align: right;
 }
 
-.list__article__item__abstract {
+.list__post__item__abstract {
   width: 100%;
   max-height: 50px;
   word-wrap: break-word;
-  word-break: all;
 }
 
-.list__article__item__publish {
+.list__post__item__publish {
   position: absolute;
   top: -45px;
   right: -3px;
   font-size: 13px;
   color: #aab2b3;
+}
+
+.post-paginator {
+  display: table;
+  margin: 60px auto;
 }
 </style>

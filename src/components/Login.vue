@@ -23,33 +23,33 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
     };
   },
   methods: {
     ...mapMutations({
-      deleteToken: 'DELETE_TOKEN'
+      deleteToken: 'DELETE_TOKEN',
     }),
     login() {
       const info = {
         username: this.username,
-        password: this.password
+        password: this.password,
       };
       this.$store
         .dispatch('createToken', info)
         .then(() => {
           this.$message({
             message: '登录成功',
-            type: 'success'
+            type: 'success',
           });
           this.$router.push('/');
         })
-        .catch(err => {
+        .catch((err) => {
           this.$message.error(err.response.data.message);
           this.deleteToken();
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

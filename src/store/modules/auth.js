@@ -1,13 +1,16 @@
 import * as types from '../mutation-types';
-import auth from '../../api/auth';
+import HttpService from '../../services/http';
 
-const state = {
-  token: sessionStorage.getItem('blog-admin-token')
+const authState = {
+  token: sessionStorage.getItem('blog-admin-token'),
 };
 
 const actions = {
-  createToken({ commit, state }, { username, password }) {
-    return auth.createToken(username, password)
+  createToken({ commit }, { username, password }) {
+    return HttpService.post('auth/login', {
+      username,
+      password,
+    })
       .then((res) => {
         if (res.headers.authorization) {
           commit(types.CREATE_TOKEN, res.headers.authorization);
@@ -18,7 +21,7 @@ const actions = {
           resolve(res);
         });
       });
-  }
+  },
 };
 
 const mutations = {
@@ -29,11 +32,11 @@ const mutations = {
   [types.DELETE_TOKEN](state) {
     state.token = null;
     sessionStorage.setItem('blog-admin-token', '');
-  }
+  },
 };
 
 export default {
-  state,
+  state: authState,
   actions,
-  mutations
+  mutations,
 };

@@ -1,22 +1,14 @@
 import Vue from 'vue';
-import Axios from 'axios';
 import { Message, MessageBox } from 'element-ui';
-import App from './App';
+import Furoshiki from 'furoshiki';
+import App from './views/app';
 import router from './router';
 import store from './store';
-import config from './assets/js/config';
 import './assets/scss/index.scss';
 
 Vue.config.productionTip = false;
-Axios.defaults.baseURL = config.baseUri;
-Axios.interceptors.request.use((request) => {
-  const req = Object.assign({}, request);
-  if (store.state.auth.token) {
-    req.headers.Authorization = store.state.auth.token;
-  }
-  return req;
-}, error => Promise.reject(error));
-Axios.interceptors.response.use(response => response, error => Promise.reject(error));
+Vue.use(Furoshiki);
+
 Vue.prototype.$message = (options) => {
   const option = Object.assign({}, options, { duration: 500 });
   return Message(option);
@@ -25,7 +17,7 @@ Vue.prototype.$message.error = (err) => {
   const option = {
     message: err,
     duration: 2000,
-    type: 'error'
+    type: 'error',
   };
   return Message(option);
 };
@@ -36,5 +28,5 @@ new Vue({
   el: '#app',
   router,
   render: h => h(App),
-  store
+  store,
 });

@@ -21,7 +21,7 @@ export default {
   name: 'Admin',
   components: {
     Editor,
-    List
+    List,
   },
   data() {
     return {};
@@ -29,22 +29,24 @@ export default {
   created() {},
   methods: {
     ...mapMutations({
-      deleteToken: 'DELETE_TOKEN'
+      deleteToken: 'DELETE_TOKEN',
     }),
     logout() {
       this.$messageBox.confirm('此操作将退出系统, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
       })
         .then(() => {
           this.deleteToken();
           this.$router.push('/login');
         })
-        .catch(() => {});
-    }
+        .catch(() => {
+        });
+    },
   },
-  computed: {}
+  computed: {
+  },
 };
 </script>
 

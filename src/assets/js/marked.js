@@ -22,7 +22,7 @@ highlight.registerLanguage('sql', require('highlight.js/lib/languages/sql'));
 highlight.registerLanguage('stylus', require('highlight.js/lib/languages/stylus'));
 
 highlight.configure({
-  classPrefix: '' // don't append class prefix
+  classPrefix: '',
 });
 
 marked.setOptions({
@@ -36,13 +36,13 @@ marked.setOptions({
   smartypants: true,
   highlight(code, lang) {
     if (!lang) {
-      return;
+      return undefined;
     }
-    if (!~languages.indexOf(lang)) {
+    if (!languages.includes(lang)) {
       return highlight.highlightAuto(code).value;
     }
     return highlight.highlight(lang, code).value;
-  }
+  },
 });
 
 export default marked;

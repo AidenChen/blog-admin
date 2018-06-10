@@ -1,15 +1,15 @@
 // auth
 export const CREATE_TOKEN = 'CREATE_TOKEN';
 export const DELETE_TOKEN = 'DELETE_TOKEN';
-// article
-export const CREATE_ARTICLE = 'CREATE_ARITCLE';
-export const DESTROY_ARTICLE = 'DESTROY_ARTICLE';
-export const UPDATE_ARTICLE = 'UPDATE_ARTICLE';
-export const INDEX_ARTICLE = 'INDEX_ARTICLE';
-export const SHOW_CURRENT_ARTICLE = 'SHOW_CURRENT_ARTICLE';
-export const PUBLISH_ARTICLE = 'PUBLISH_ARTICLE';
-export const WITHDRAW_ARTICLE = 'WITHDRAW_ARTICLE';
-export const ARTICLE_CHANGED = 'ARTICLE_CHANGED';
+// post
+export const CREATE_POST = 'CREATE_POST';
+export const DESTROY_POST = 'DESTROY_POST';
+export const UPDATE_POST = 'UPDATE_POST';
+export const INDEX_POST = 'INDEX_POST';
+export const SHOW_CURRENT_POST = 'SHOW_CURRENT_POST';
+export const PUBLISH_POST = 'PUBLISH_POST';
+export const WITHDRAW_POST = 'WITHDRAW_POST';
+export const POST_CHANGED = 'POST_CHANGED';
 // tag
 export const CREATE_TAG = 'CREATE_TAG';
 export const DESTROY_TAG = 'DESTROY_TAG';

@@ -1,216 +1,248 @@
 import * as types from '../mutation-types';
-import articleApi from '../../api/article';
-import tagApi from '../../api/tag';
+import HttpService from '../../services/http';
 
-const state = {
-  articleList: [],
-  currentArticle: {
+const editorState = {
+  posts: [],
+  currentPost: {
     id: -1,
     index: -1,
     content: '',
     title: '',
     tags: [],
     save: true,
-    is_published: false
+    is_published: false,
   },
   total: 1,
   curPage: 1,
   tagList: [],
-  selectTagArr: []
+  selectTagArr: [],
 };
 
 const getters = {
-  articleList: state => state.articleList,
-  currentArticle: state => state.currentArticle,
+  posts: state => state.posts,
+  currentPost: state => state.currentPost,
   total: state => state.total,
   curPage: state => state.curPage,
   tagList: state => state.tagList,
-  selectTagArr: state => state.selectTagArr
+  selectTagArr: state => state.selectTagArr,
 };
 
 const actions = {
-  createArticle({ commit, state }, { title, content, is_published, tags }) {
-    return articleApi
-      .create(title, content, is_published, tags)
+  // 添加文章
+  /* eslint-disable no-unused-vars */
+  createPost({ commit }, post) {
+  /* eslint-enable no-unused-vars */
+    return HttpService.post('posts', post)
       .then(res => new Promise((resolve) => {
         resolve(res);
       }));
   },
-  destroyArticle({ commit, state }, { id }) {
-    return articleApi.destroy(id).then(res => {
-      if (state.articleList.length <= 1) {
-        const article = {
-          id: -1,
-          index: 0,
-          content: '',
-          title: '',
-          tags: [],
-          save: false,
-          is_published: false
-        };
-        commit(types.SHOW_CURRENT_ARTICLE, article);
-      }
-      return new Promise((resolve) => {
-        resolve(res);
+  // 删除文章
+  destroyPost({ commit, state }, { id }) {
+    return HttpService.delete(`posts/${id}`)
+      .then((res) => {
+        if (state.posts.length <= 1) {
+          const post = {
+            id: -1,
+            index: 0,
+            content: '',
+            title: '',
+            tags: [],
+            save: false,
+            is_published: false,
+          };
+          commit(types.SHOW_CURRENT_POST, post);
+        }
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  updateArticle({ commit, state }, { id, article }) {
-    return articleApi.update(id, article).then(res => {
-      commit(types.UPDATE_ARTICLE);
-      return new Promise((resolve) => {
-        resolve(res);
+  // 更新文章
+  updatePost({ commit }, { id, post }) {
+    return HttpService.patch(`posts/${id}`, post)
+      .then((res) => {
+        commit(types.UPDATE_POST);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  indexArticle({ commit, state, dispatch }, { tags = '', index = 1, size = 10 } = {}) {
-    return articleApi.index(tags, index, size).then(res => {
-      commit(types.INDEX_ARTICLE, { articleList: res.data.data.items, total: Math.ceil(res.data.data.total / size), curPage: index });
-      dispatch('showCurrentArticle', 0);
-      return new Promise((resolve) => {
-        resolve(res);
+  // 查询文章列表
+  /* eslint-disable no-unused-vars */
+  indexPost({ commit, state, dispatch }, { tags = '', index = 1, size = 10 } = {}) {
+  /* eslint-enable no-unused-vars */
+    return HttpService.get('posts', {
+      tags,
+      index,
+      size,
+    })
+      .then((res) => {
+        commit(types.INDEX_POST, {
+          posts: res.data.data.items,
+          total: Math.ceil(res.data.data.total / size),
+          curPage: index,
+        });
+        dispatch('showCurrentPost', 0);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  showCurrentArticle({ commit, state }, index) {
-    let article;
-    if (state.articleList.length === 0 || index === -1) {
-      article = {
+  // 显示当前文章
+  showCurrentPost({ commit, state }, index) {
+    let post;
+    if (state.posts.length === 0 || index === -1) {
+      post = {
         id: -1,
         index: -1,
         title: '',
         content: '<!--more-->',
         tags: [],
         save: true,
-        is_published: false
+        is_published: false,
       };
     } else {
-      article = {
-        id: state.articleList[index].id,
+      post = {
+        id: state.posts[index].id,
         index,
-        title: state.articleList[index].title,
-        content: state.articleList[index].content,
-        tags: state.articleList[index].tags,
+        title: state.posts[index].title,
+        content: state.posts[index].content,
+        tags: state.posts[index].tags,
         save: true,
-        is_published: state.articleList[index].is_published
+        is_published: state.posts[index].is_published,
       };
     }
-    commit(types.SHOW_CURRENT_ARTICLE, article);
+    commit(types.SHOW_CURRENT_POST, post);
   },
-  publishArticle({ commit, state }, { id }) {
-    return articleApi.publish(id).then(res => {
-      commit(types.PUBLISH_ARTICLE, id);
-      return new Promise((resolve) => {
-        resolve(res);
+  // 发布文章
+  publishPost({ commit }, { id }) {
+    return HttpService.patch(`posts/${id}`, {
+      is_published: true,
+    })
+      .then((res) => {
+        commit(types.PUBLISH_POST, id);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  withdrawArticle({ commit, state }, { id }) {
-    return articleApi.withdraw(id).then(res => {
-      commit(types.WITHDRAW_ARTICLE, id);
-      return new Promise((resolve) => {
-        resolve(res);
+  // 撤回文章
+  withdrawPost({ commit }, { id }) {
+    return HttpService.patch(`posts/${id}`, {
+      is_published: false,
+    })
+      .then((res) => {
+        commit(types.WITHDRAW_POST, id);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  articleChanged({ commit }) {
-    commit(types.ARTICLE_CHANGED);
+  postChanged({ commit }) {
+    commit(types.POST_CHANGED);
   },
-  createTag({ commit, state }, { name }) {
-    return tagApi.create(name).then(res => {
-      commit(types.CREATE_TAG, res.data.data);
-      return new Promise((resolve) => {
-        resolve(res);
+  createTag({ commit }, { name }) {
+    return HttpService.post('tags', { name })
+      .then((res) => {
+        commit(types.CREATE_TAG, res.data.data);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  destroyTag({ commit, state }, { id }) {
-    return tagApi.destroy(id).then(res => {
-      commit(types.DESTROY_TAG, id);
-      return new Promise((resolve) => {
-        resolve(res);
+  destroyTag({ commit }, { id }) {
+    return HttpService.delete(`tags/${id}`)
+      .then((res) => {
+        commit(types.DESTROY_TAG, id);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  updateTag({ commit, state }, { id, name }) {
-    return tagApi.update(id, name).then(res => {
-      commit(types.UPDATE_TAG, { id, name });
-      return new Promise((resolve) => {
-        resolve(res);
+  updateTag({ commit }, { id, name }) {
+    return HttpService.put(`tags/${id}`, { name })
+      .then((res) => {
+        commit(types.UPDATE_TAG, { id, name });
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
   indexTag({ commit }) {
-    return tagApi.index().then(res => {
-      commit(types.INDEX_TAG, res.data.data.items);
-      return new Promise((resolve) => {
-        resolve(res);
+    return HttpService.get('tags')
+      .then((res) => {
+        commit(types.INDEX_TAG, res.data.data.items);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
       });
-    });
   },
-  destroyCurrentTag({ commit, state }, { index }) {
+  destroyCurrentTag({ commit }, { index }) {
     commit(types.DESTROY_CURRENT_TAG, index);
     return new Promise((resolve) => {
       resolve();
     });
-  }
+  },
 };
 
 const mutations = {
-  [types.CREATE_ARTICLE](state, article) {
-    state.articleList.unshift(article);
-    state.currentArticle = article;
+  [types.CREATE_POST](state, post) {
+    state.posts.unshift(post);
+    state.currentPost = post;
   },
-  [types.DESTROY_ARTICLE](state, index) {
-    state.articleList.splice(index, 1);
-    if (state.articleList.length === 0) {
+  [types.DESTROY_POST](state, index) {
+    state.posts.splice(index, 1);
+    if (state.posts.length === 0) {
       return;
     }
-    if (index > state.articleList.length - 1) {
-      index = state.articleList.length - 1;
+    if (index > state.posts.length - 1) {
+      /* eslint-disable no-param-reassign */
+      index = state.posts.length - 1;
+      /* eslint-enable no-param-reassign */
     }
-    state.currentArticle = state.articleList[index];
-    state.currentArticle.index = index;
-    state.currentArticle.save = true;
+    state.currentPost = state.posts[index];
+    state.currentPost.index = index;
+    state.currentPost.save = true;
   },
-  [types.UPDATE_ARTICLE](state) {
-    state.currentArticle.save = true;
+  [types.UPDATE_POST](state) {
+    state.currentPost.save = true;
   },
-  [types.INDEX_ARTICLE](state, { articleList, total, curPage }) {
-    state.articleList = articleList;
+  [types.INDEX_POST](state, { posts, total, curPage }) {
+    state.posts = posts;
     state.total = total;
     state.curPage = curPage;
   },
-  [types.SHOW_CURRENT_ARTICLE](state, article) {
-    state.currentArticle = article;
+  [types.SHOW_CURRENT_POST](state, post) {
+    state.currentPost = post;
   },
-  [types.PUBLISH_ARTICLE](state, id) {
-    state.currentArticle.is_published = true;
-    state.articleList.find(p => p.id === id).is_published = true;
+  [types.PUBLISH_POST](state, id) {
+    state.currentPost.is_published = true;
+    state.posts.find(p => p.id === id).is_published = true;
   },
-  [types.WITHDRAW_ARTICLE](state, id) {
-    state.currentArticle.is_published = false;
-    state.articleList.find(p => p.id === id).is_published = false;
+  [types.WITHDRAW_POST](state, id) {
+    state.currentPost.is_published = false;
+    state.posts.find(p => p.id === id).is_published = false;
   },
-  [types.ARTICLE_CHANGED](state) {
-    state.currentArticle.save = false;
+  [types.POST_CHANGED](state) {
+    state.currentPost.save = false;
   },
   [types.CREATE_TAG](state, tag) {
-    state.currentArticle.tags.push(tag);
+    state.currentPost.tags.push(tag);
   },
   [types.DESTROY_TAG](state, id) {
     state.tagList = state.tagList.filter(tag => tag.id !== id);
-    state.currentArticle.tags = state.currentArticle.tags.filter(tag => tag.id !== id);
+    state.currentPost.tags = state.currentPost.tags.filter(tag => tag.id !== id);
     state.selectTagArr = state.selectTagArr.filter(e => e !== id);
   },
   [types.UPDATE_TAG](state, tag) {
-    state.currentArticle.tags.push(tag);
+    state.currentPost.tags.push(tag);
   },
   [types.INDEX_TAG](state, tagList) {
     state.tagList = tagList;
   },
   [types.DESTROY_CURRENT_TAG](state, index) {
-    state.currentArticle.tags.splice(index, 1);
+    state.currentPost.tags.splice(index, 1);
   },
   [types.TOGGLE_SELECT_TAG](state, id) {
     if (!state.selectTagArr.includes(id)) {
@@ -221,12 +253,12 @@ const mutations = {
   },
   [types.CLEAR_SELECT_TAG](state) {
     state.selectTagArr = [];
-  }
+  },
 };
 
 export default {
-  state,
+  state: editorState,
   getters,
   actions,
-  mutations
+  mutations,
 };
