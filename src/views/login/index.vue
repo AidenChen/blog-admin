@@ -19,7 +19,7 @@
 import { mapMutations } from 'vuex';
 
 export default {
-  name: 'Login',
+  name: 'login',
   data() {
     return {
       username: '',
@@ -42,7 +42,7 @@ export default {
             message: '登录成功',
             type: 'success',
           });
-          this.$router.push('/');
+          this.$router.push('/dashboard');
         })
         .catch((err) => {
           this.$message.error(err.response.data.message);

@@ -31,68 +31,70 @@ const actions = {
   // 添加文章
   /* eslint-disable no-unused-vars */
   createPost({ commit }, post) {
-  /* eslint-enable no-unused-vars */
-    return HttpService.post('posts', post)
-      .then(res => new Promise((resolve) => {
-        resolve(res);
-      }));
+    /* eslint-enable no-unused-vars */
+    return HttpService.post('posts', post).then(
+      res =>
+        new Promise(resolve => {
+          resolve(res);
+        }),
+    );
   },
   // 删除文章
   destroyPost({ commit, state }, { id }) {
-    return HttpService.delete(`posts/${id}`)
-      .then((res) => {
-        if (state.posts.length <= 1) {
-          const post = {
-            id: -1,
-            index: 0,
-            content: '',
-            title: '',
-            tags: [],
-            save: false,
-            is_published: false,
-          };
-          commit(types.SHOW_CURRENT_POST, post);
-        }
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    return HttpService.delete(`posts/${id}`).then(res => {
+      if (state.posts.length <= 1) {
+        const post = {
+          id: -1,
+          index: 0,
+          content: '',
+          title: '',
+          tags: [],
+          save: false,
+          is_published: false,
+        };
+        commit(types.SHOW_CURRENT_POST, post);
+      }
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   // 更新文章
   updatePost({ commit }, { id, post }) {
-    return HttpService.patch(`posts/${id}`, post)
-      .then((res) => {
-        commit(types.UPDATE_POST);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    return HttpService.patch(`posts/${id}`, post).then(res => {
+      commit(types.UPDATE_POST);
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   // 查询文章列表
   /* eslint-disable no-unused-vars */
-  indexPost({ commit, state, dispatch }, { tags = '', index = 1, size = 10 } = {}) {
-  /* eslint-enable no-unused-vars */
+  indexPost(
+    { commit, state, dispatch },
+    { tags = '', index = 1, size = 10 } = {},
+  ) {
+    /* eslint-enable no-unused-vars */
     return HttpService.get('posts', {
       tags,
       index,
       size,
-    })
-      .then((res) => {
-        commit(types.INDEX_POST, {
-          posts: res.data.data.items,
-          total: Math.ceil(res.data.data.total / size),
-          curPage: index,
-        });
-        dispatch('showCurrentPost', 0);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    }).then(res => {
+      commit(types.INDEX_POST, {
+        posts: res.data.data.items,
+        total: Math.ceil(res.data.data.total / size),
+        curPage: index,
       });
+      // dispatch('showCurrentPost', 0);
+      return new Promise(resolve => {
+        resolve(res);
+      });
+    });
   },
   // 显示当前文章
-  showCurrentPost({ commit, state }, index) {
+  showCurrentPost({ commit, state }, id) {
     let post;
-    if (state.posts.length === 0 || index === -1) {
+    if (state.posts.length === 0 || !id) {
       post = {
         id: -1,
         index: -1,
@@ -103,14 +105,15 @@ const actions = {
         is_published: false,
       };
     } else {
+      const currentPost = state.posts.find(item => item.id === id);
       post = {
-        id: state.posts[index].id,
-        index,
-        title: state.posts[index].title,
-        content: state.posts[index].content,
-        tags: state.posts[index].tags,
+        id: currentPost.id,
+        index: currentPost.index,
+        title: currentPost.title,
+        content: currentPost.content,
+        tags: currentPost.tags,
         save: true,
-        is_published: state.posts[index].is_published,
+        is_published: currentPost.is_published,
       };
     }
     commit(types.SHOW_CURRENT_POST, post);
@@ -119,68 +122,62 @@ const actions = {
   publishPost({ commit }, { id }) {
     return HttpService.patch(`posts/${id}`, {
       is_published: true,
-    })
-      .then((res) => {
-        commit(types.PUBLISH_POST, id);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    }).then(res => {
+      commit(types.PUBLISH_POST, id);
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   // 撤回文章
   withdrawPost({ commit }, { id }) {
     return HttpService.patch(`posts/${id}`, {
       is_published: false,
-    })
-      .then((res) => {
-        commit(types.WITHDRAW_POST, id);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    }).then(res => {
+      commit(types.WITHDRAW_POST, id);
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   postChanged({ commit }) {
     commit(types.POST_CHANGED);
   },
   createTag({ commit }, { name }) {
-    return HttpService.post('tags', { name })
-      .then((res) => {
-        commit(types.CREATE_TAG, res.data.data);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    return HttpService.post('tags', { name }).then(res => {
+      commit(types.CREATE_TAG, res.data.data);
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   destroyTag({ commit }, { id }) {
-    return HttpService.delete(`tags/${id}`)
-      .then((res) => {
-        commit(types.DESTROY_TAG, id);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    return HttpService.delete(`tags/${id}`).then(res => {
+      commit(types.DESTROY_TAG, id);
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   updateTag({ commit }, { id, name }) {
-    return HttpService.put(`tags/${id}`, { name })
-      .then((res) => {
-        commit(types.UPDATE_TAG, { id, name });
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    return HttpService.put(`tags/${id}`, { name }).then(res => {
+      commit(types.UPDATE_TAG, { id, name });
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   indexTag({ commit }) {
-    return HttpService.get('tags')
-      .then((res) => {
-        commit(types.INDEX_TAG, res.data.data.items);
-        return new Promise((resolve) => {
-          resolve(res);
-        });
+    return HttpService.get('tags').then(res => {
+      commit(types.INDEX_TAG, res.data.data.items);
+      return new Promise(resolve => {
+        resolve(res);
       });
+    });
   },
   destroyCurrentTag({ commit }, { index }) {
     commit(types.DESTROY_CURRENT_TAG, index);
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve();
     });
   },
@@ -232,7 +229,9 @@ const mutations = {
   },
   [types.DESTROY_TAG](state, id) {
     state.tagList = state.tagList.filter(tag => tag.id !== id);
-    state.currentPost.tags = state.currentPost.tags.filter(tag => tag.id !== id);
+    state.currentPost.tags = state.currentPost.tags.filter(
+      tag => tag.id !== id,
+    );
     state.selectTagArr = state.selectTagArr.filter(e => e !== id);
   },
   [types.UPDATE_TAG](state, tag) {

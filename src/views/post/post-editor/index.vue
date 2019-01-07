@@ -5,9 +5,7 @@
     </p>
     <div class="editor-box__input-box">
       <label for="title">文章标题:</label>
-      <input type="text" placeholder="文章标题" v-model="postTitle"
-        class="editor-box__input" id="title"
-      >
+      <input type="text" placeholder="文章标题" v-model="postTitle" class="editor-box__input" id="title">
     </div>
     <div class="editor-box__input-box">
       <label for="title">添加标签:</label>
@@ -19,7 +17,7 @@
         <i class="fa fa-trash-o" aria-hidden="true" @click="destroyCurrentTag(index)"></i>
       </li>
     </ul>
-    <textarea id="editor"/>
+    <textarea id="editor" />
     <div class="editor-box__button-box">
       <button @click="createPost" v-if="currentPost.id === -1">添加</button>
       <button @click="updatePost({button: 'true'})" v-else>保存</button>
@@ -36,11 +34,11 @@
 import SimpleMDE from 'simplemde';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import 'simplemde/dist/simplemde.min.css';
-import marked from '../assets/js/marked';
+import marked from '../../../assets/js/marked';
 
 let simplemde;
 export default {
-  name: 'Editor',
+  name: 'post-editor',
   data() {
     return {
       postTag: '',
@@ -108,7 +106,7 @@ export default {
           });
           this.clearSelect();
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error(err.response.data.message);
         });
     },
@@ -141,7 +139,7 @@ export default {
             });
           }
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error(err.response.data.message);
         });
     },
@@ -156,7 +154,7 @@ export default {
             type: 'success',
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error(err.response.data.message);
         });
     },
@@ -171,21 +169,22 @@ export default {
             type: 'success',
           });
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error(err.response.data.message);
         });
     },
     destroyPost() {
-      this.$messageBox.confirm('此操作将永久删除该文章, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
+      this.$messageBox
+        .confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
         .then(() => {
-          if (this.currentPost.id === -1) {
-            this.showCurrentPost(0);
-            return;
-          }
+          // if (this.currentPost.id === -1) {
+          //   this.showCurrentPost(0);
+          //   return;
+          // }
           this.$store
             .dispatch('destroyPost', {
               id: this.currentPost.id,
@@ -198,7 +197,7 @@ export default {
               });
               this.clearSelect();
             })
-            .catch((err) => {
+            .catch(err => {
               this.$message.error(err.response.data.message);
             });
         })
@@ -235,7 +234,7 @@ export default {
               this.updatePost({});
             }
           })
-          .catch((err) => {
+          .catch(err => {
             this.$message.error(err.response.data.message);
           });
       }
@@ -249,7 +248,7 @@ export default {
           }
           this.indexTag();
         })
-        .catch((err) => {
+        .catch(err => {
           this.$message.error(err);
         });
     },
@@ -279,7 +278,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../assets/scss/preview.scss';
+@import '../../../assets/scss/preview.scss';
 
 .editor-box {
   position: relative;
@@ -312,8 +311,8 @@ export default {
       height: 30px;
       line-height: 30px;
       margin-right: 20px;
-      verticle-align: center;
-      text-algin: center;
+      vertical-align: center;
+      text-align: center;
       border-radius: 5px;
       padding: 0 5px;
       cursor: pointer;

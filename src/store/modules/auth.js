@@ -5,6 +5,10 @@ const authState = {
   token: sessionStorage.getItem('blog-admin-token'),
 };
 
+const getters = {
+  token: state => state.token,
+};
+
 const actions = {
   createToken({ commit }, { username, password }) {
     return HttpService.post('auth/login', {
@@ -37,6 +41,7 @@ const mutations = {
 
 export default {
   state: authState,
+  getters,
   actions,
   mutations,
 };
