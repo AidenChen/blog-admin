@@ -40,6 +40,7 @@ axios.interceptors.response.use(
 );
 
 axios.defaults.baseURL = process.env.API_BASE;
+axios.defaults.timeout = 10 * 60 * 1000;
 
 export default class Http {
   static get(endpoint, params) {
