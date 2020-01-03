@@ -35,6 +35,8 @@ import SimpleMDE from 'simplemde';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import 'simplemde/dist/simplemde.min.css';
 import marked from '../../../assets/js/marked';
+import '../../../assets/js/inline-attachment.min';
+import '../../../assets/js/codemirror-4.inline-attachment.min';
 
 let simplemde;
 export default {
@@ -48,7 +50,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['currentPost', 'selectTagArr']),
+    ...mapGetters(['currentPost', 'selectTagArr', 'token']),
   },
   mounted() {
     // dom渲染完成后置入编辑器当前文章内容
@@ -57,6 +59,26 @@ export default {
       this.postContent = this.currentPost.content;
       simplemde.value(this.postContent);
     });
+    const inlineAttachmentConfig = {
+      // uploadUrl: 'http://localhost:3000/api/files',
+      uploadUrl: `${process.env.API_BASE}files`,
+      extraHeaders: {
+        Authorization: this.token,
+      },
+      onFileUploadResponse(xhr) {
+        const result = JSON.parse(xhr.responseText);
+        const filename = result.data.path;
+        let newValue;
+        if (typeof this.settings.urlText === 'function') {
+          newValue = this.settings.urlText.call(this, filename, result);
+        } else {
+          newValue = this.settings.urlText.replace(this.filenameTag, filename);
+        }
+        const text = this.editor.getValue().replace(this.lastValue, newValue);
+        this.editor.setValue(text);
+        this.settings.onFileUploaded.call(this, filename);
+      },
+    };
     simplemde = new SimpleMDE({
       autoDownloadFontAwesome: false,
       element: document.getElementById('editor'),
@@ -76,6 +98,7 @@ export default {
       }
       this.postContent = value;
     });
+    window.inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, inlineAttachmentConfig);
   },
   methods: {
     ...mapActions(['showCurrentPost', 'indexTag', 'indexPost']),
