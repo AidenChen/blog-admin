@@ -33,10 +33,9 @@
 <script>
 import SimpleMDE from 'simplemde';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import inlineAttachment from 'inline-attachment';
 import 'simplemde/dist/simplemde.min.css';
 import marked from '../../../assets/js/marked';
-import '../../../assets/js/inline-attachment.min';
-import '../../../assets/js/codemirror-4.inline-attachment.min';
 
 let simplemde;
 export default {
@@ -60,8 +59,8 @@ export default {
       simplemde.value(this.postContent);
     });
     const inlineAttachmentConfig = {
-      // uploadUrl: 'http://localhost:3000/api/files',
-      uploadUrl: `${process.env.API_BASE}files`,
+      uploadUrl: 'http://localhost:3000/api/files',
+      // uploadUrl: `${process.env.API_BASE}files`,
       extraHeaders: {
         Authorization: this.token,
       },
@@ -98,7 +97,7 @@ export default {
       }
       this.postContent = value;
     });
-    window.inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, inlineAttachmentConfig);
+    inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, inlineAttachmentConfig);
   },
   methods: {
     ...mapActions(['showCurrentPost', 'indexTag', 'indexPost']),
