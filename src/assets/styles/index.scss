@@ -1,0 +1,43 @@
+@import 'normalize.css/normalize.css';
+// @import './syntax.scss';
+
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 5px;
+  background-color: #888888;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background: #fff;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #888888;
+}
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 6px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f2f6fc;
+}
+
+// 标签样式
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+// reset element-ui css
+.el-header {
+  padding: 0;
+}
+
+.el-main {
+  padding: 0;
+}

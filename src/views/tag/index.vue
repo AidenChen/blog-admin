@@ -1,16 +1,17 @@
 <template>
   <div class="tag">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
-<script>
-export default {
-  name: 'tag',
-};
+<script lang="ts" setup>
+defineOptions({
+  // eslint-disable-next-line vue/multi-word-component-names
+  name: 'Tag'
+});
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tag {
   height: 100%;
 }

@@ -1,8 +1,6 @@
 <template>
   <div class="tag-list">
-    <div class="list__top-title">
-      <i class="fa fa-tags" aria-hidden="true" />&nbsp;标签
-    </div>
+    <div class="list__top-title"><i class="fa fa-tags" aria-hidden="true" />&nbsp;标签</div>
     <ul class="list__tag">
       <li v-for="(tag, index) in tagList" :key="index" class="list__tag__item">
         <i class="fa fa-tag" aria-hidden="true" />&nbsp;&nbsp;
@@ -13,52 +11,48 @@
   </div>
 </template>
 
-<script>
-import { mapGetters, mapActions } from 'vuex';
+<script lang="ts" setup>
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useEditorStore } from '@/stores/editor';
 
-export default {
-  name: 'tag-list',
-  computed: {
-    ...mapGetters(['tagList']),
-  },
-  data() {
-    return {};
-  },
-  methods: {
-    ...mapActions(['indexTag', 'destroyTag']),
-    destroyTagFn(id) {
-      this.$messageBox
-        .confirm('此操作将永久删除该标签, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        })
-        .then(() => {
-          this.destroyTag({
-            id,
-          })
-            .then(() => {
-              this.$message({
-                message: '删除成功',
-                type: 'success',
-              });
-            })
-            .catch(err => {
-              this.$message.error(err.response.data.message);
-            });
-        })
-        .catch(() => {});
-    },
-  },
-  mounted() {
-    this.indexTag();
-  },
+defineOptions({
+  name: 'TagList'
+});
+
+const editorStore = useEditorStore();
+const { tagList } = storeToRefs(editorStore);
+
+const destroyTagFn = (id) => {
+  // this.$messageBox
+  //   .confirm('此操作将永久删除该标签, 是否继续?', '提示', {
+  //     confirmButtonText: '确定',
+  //     cancelButtonText: '取消',
+  //     type: 'warning'
+  //   })
+  //   .then(() => {
+  editorStore
+    .destroyTag({ id })
+    .then(() => {
+      // this.$message({
+      //   message: '删除成功',
+      //   type: 'success'
+      // })
+    })
+    .catch((err) => {
+      // this.$message.error(err.response.data.message)
+    });
+  // })
+  // .catch(() => {})
 };
+
+onMounted(() => {
+  editorStore.indexTag();
+});
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .list__top-title {
-  width: 100%;
   font-size: 25px;
   padding: 10px;
   color: #0288d1;
