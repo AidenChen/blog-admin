@@ -88,7 +88,7 @@ onMounted(() => {
     autoDownloadFontAwesome: false,
     element: document.getElementById('editor'),
     spellChecker: false,
-    previewRender: (plainText: any) => marked(plainText)
+    previewRender: (plainText: any) => marked.parse(plainText)
   });
   simplemde.codemirror.on('change', () => {
     const value = simplemde.value();

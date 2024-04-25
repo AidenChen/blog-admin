@@ -1,5 +1,5 @@
 @import 'normalize.css/normalize.css';
-// @import './syntax.scss';
+@import 'github-markdown-css';
 
 // 滚动条样式
 ::-webkit-scrollbar {
@@ -40,4 +40,15 @@ body {
 
 .el-main {
   padding: 0;
+}
+
+// markdown
+.CodeMirror pre {
+  padding: 0 !important;
+}
+
+code.hljs {
+  background: #23241f !important;
+  padding: 1em !important;
+  display: block !important;
 }
