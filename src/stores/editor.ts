@@ -64,7 +64,7 @@ export const useEditorStore = defineStore('editor', () => {
   function indexPost({ tags = '', index = 1, size = 10 } = {}) {
     return api.post.index({ tags, index, size }).then((res) => {
       posts.value = res.data.data.items;
-      total.value = Math.ceil(res.data.data.total / size);
+      total.value = res.data.data.total;
       curPage.value = index;
       return new Promise((resolve) => {
         resolve(res);
@@ -126,13 +126,18 @@ export const useEditorStore = defineStore('editor', () => {
     currentPost.value.save = false;
   }
 
-  function createTag(name) {
-    return api.tag.create({ name }).then((res) => {
-      currentPost.value.tags.push(res.data.data);
-      return new Promise((resolve) => {
-        resolve(res);
+  function createTag({ name }) {
+    return api.tag
+      .create({ name })
+      .then((res) => {
+        currentPost.value.tags.push(res.data.data);
+        return new Promise((resolve) => {
+          resolve(res);
+        });
+      })
+      .catch(() => {
+        currentPost.value.tags.push(tagList.value.find((item) => item.name === name));
       });
-    });
   }
 
   function destroyTag(id) {

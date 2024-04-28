@@ -30,7 +30,7 @@ defineOptions({
 
 const router = useRouter();
 const editorStore = useEditorStore();
-const { posts, tagList, currentPost, total, curPage, selectTagArr } = storeToRefs(editorStore);
+const { posts, currentPost, total, curPage } = storeToRefs(editorStore);
 
 const cutTitle = computed(() => {
   return (value) => {
@@ -41,14 +41,14 @@ const cutTitle = computed(() => {
   };
 });
 
-watch(
-  () => editorStore.selectTagArr,
-  (val) => {
-    editorStore.indexPost({
-      tags: val
-    });
-  }
-);
+// watch(
+//   () => editorStore.selectTagArr,
+//   (val) => {
+//     editorStore.indexPost({
+//       tags: val
+//     });
+//   }
+// );
 
 onMounted(() => {
   editorStore.indexPost().then(() => {});
@@ -95,11 +95,10 @@ const destroyPost = () => {
   // .catch(() => {});
 };
 
-const changePage = (cur) => {
+const changePage = (index: number) => {
   editorStore
     .indexPost({
-      index: cur,
-      tags: selectTagArr.value
+      index
     })
     .then(() => {});
 };

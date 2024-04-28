@@ -31,9 +31,9 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted, nextTick } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '@/stores/auth';
-import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import SimpleMDE from 'simplemde/dist/simplemde.min.js';
 import 'simplemde/dist/simplemde.min.css';
@@ -46,13 +46,11 @@ defineOptions({
 
 const authStore = useAuthStore();
 const { token } = storeToRefs(authStore);
-const appStore = useAppStore();
 const editorStore = useEditorStore();
-const { currentPost, selectTagArr } = storeToRefs(editorStore);
+const { currentPost } = storeToRefs(editorStore);
 
 let simplemde: any;
 const postTag = ref<string>('');
-const tags = ref<any[]>([]);
 const postTitle = ref<string>('');
 const postContent = ref<string>('');
 
@@ -103,6 +101,16 @@ onMounted(() => {
     }
     postContent.value = value;
   });
+});
+
+onBeforeRouteLeave((to, from, next) => {
+  const res = confirm('您确定要离开此页面吗？您的更改可能不会保存。');
+  if (!res) {
+    next(false);
+    return;
+  }
+
+  next();
 });
 
 const createPost = () => {

@@ -2,8 +2,9 @@ import axios from 'axios';
 // import { Message } from 'element-ui'
 // import store from '@/store';
 
-const tip = () => {
+const tip = (msg) => {
   // Message.error(msg)
+  console.log(msg);
 };
 
 const baseUrl = '/dev';
