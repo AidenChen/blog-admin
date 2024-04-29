@@ -32,7 +32,7 @@ const destroyTagFn = (id) => {
   //   })
   //   .then(() => {
   editorStore
-    .destroyTag({ id })
+    .destroyTag(id)
     .then(() => {
       // this.$message({
       //   message: '删除成功',
