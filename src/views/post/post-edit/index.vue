@@ -10,10 +10,10 @@
       <input type="text" placeholder="回车添加文章标签" v-model="postTag" @keyup.enter="createTag" />
     </div>
     <ul class="editor-box__tagList">
-      <li v-for="(tag, index) in currentPost.tags" :key="index">
+      <li v-for="tag in currentPost.tags" :key="tag.id">
         <span>{{ tag.name }}</span
         >&nbsp;&nbsp;
-        <i class="fa fa-trash-o" aria-hidden="true" @click="destroyCurrentTag(index)"></i>
+        <i class="fa fa-trash-o" aria-hidden="true" @click="destroyCurrentTag(tag.id)"></i>
       </li>
     </ul>
     <textarea id="editor" />
@@ -212,10 +212,7 @@ const destroyPost = () => {
   //   return;
   // }
   editorStore
-    .destroyPost({
-      id: currentPost.value.id,
-      index: currentPost.value.index
-    })
+    .destroyPost(currentPost.value.id)
     .then(() => {
       // this.$message({
       //   message: '删除成功',
@@ -267,9 +264,9 @@ const createTag = () => {
   }
 };
 
-const destroyCurrentTag = (index) => {
+const destroyCurrentTag = (tagId: string) => {
   editorStore
-    .destroyCurrentTag({ index })
+    .destroyCurrentTag(tagId)
     .then(() => {
       if (currentPost.value.id !== -1) {
         updatePost();

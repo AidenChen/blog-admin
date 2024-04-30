@@ -5,9 +5,8 @@ import api from '@/api';
 export const useEditorStore = defineStore('editor', () => {
   const currentPost = ref<any>({
     id: -1,
-    index: -1,
-    content: '',
     title: '',
+    content: '',
     tags: [],
     save: true,
     is_published: false
@@ -35,9 +34,8 @@ export const useEditorStore = defineStore('editor', () => {
       if (posts.value.length <= 1) {
         const post = {
           id: -1,
-          index: 0,
-          content: '',
           title: '',
+          content: '',
           tags: [],
           save: false,
           is_published: false
@@ -73,12 +71,11 @@ export const useEditorStore = defineStore('editor', () => {
   }
 
   // 显示当前文章
-  function showCurrentPost(id) {
+  async function showCurrentPost(id) {
     let post;
     if (posts.value.length === 0 || !id) {
       post = {
         id: -1,
-        index: -1,
         title: '',
         content: '<!--more-->',
         tags: [],
@@ -86,10 +83,10 @@ export const useEditorStore = defineStore('editor', () => {
         is_published: false
       };
     } else {
-      const currentPost = posts.value.find((item) => item.id === id);
+      const { data } = await api.post.show(id);
+      const currentPost = data.data;
       post = {
         id: currentPost.id,
-        index: currentPost.index,
         title: currentPost.title,
         content: currentPost.content,
         tags: currentPost.tags,
@@ -169,10 +166,10 @@ export const useEditorStore = defineStore('editor', () => {
     });
   }
 
-  function destroyCurrentTag(index) {
-    currentPost.value.tags.splice(index, 1);
+  function destroyCurrentTag(tagId: string) {
+    currentPost.value.tags = currentPost.value.tags.filter((tag: any) => tag.id !== tagId);
     return new Promise((resolve) => {
-      resolve();
+      resolve(tagId);
     });
   }
 

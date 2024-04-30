@@ -2,11 +2,11 @@
   <div class="list">
     <ul class="list__post">
       <li @click="createPost" class="list__post__button"><i class="fa fa-plus" aria-hidden="true" />&nbsp;新建文章</li>
-      <li v-for="(post, index) in posts" :key="index" @click="switchPost(post.id)" class="list__post__item" :class="{ 'list__post__item--active': currentPost.index == index }">
+      <li v-for="post in posts" :key="post.id" @click="switchPost(post.id)" class="list__post__item" :class="{ 'list__post__item--active': currentPost.id == post.id }">
         <h1 class="list__post__item__title">{{ cutTitle(post.title) }}</h1>
         <div class="list__post__item__info">
           <i class="fa fa-tag" aria-hidden="true" />
-          <span v-for="(tag, index) in post.tags" :key="index"> {{ tag.name }}</span>
+          <span v-for="tag in post.tags" :key="tag.id"> {{ tag.name }}</span>
           <p class="list__post__item__createTime"><i class="fa fa-calendar" aria-hidden="true" />&nbsp; {{ post.created_at }}</p>
           <p class="list__post__item__publish" v-if="post.is_published">已发布</p>
         </div>
@@ -60,8 +60,8 @@ const toggleSelectFn = (id) => {
 };
 
 const switchPost = (id) => {
-  editorStore.showCurrentPost(id);
   router.push({ name: 'post-edit' });
+  editorStore.showCurrentPost(id);
 };
 
 const createPost = () => {
@@ -78,10 +78,7 @@ const destroyPost = () => {
   //   })
   // .then(() => {
   editorStore
-    .destroyPost({
-      id: currentPost.value.id,
-      index: currentPost.value.index
-    })
+    .destroyPost(currentPost.value.id)
     .then(() => {
       // this.$message({
       //   message: '删除成功',

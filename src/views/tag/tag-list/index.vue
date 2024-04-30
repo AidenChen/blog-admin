@@ -63,7 +63,6 @@ onMounted(() => {
 }
 
 .list__tag {
-  height: 140px;
   overflow: auto;
   display: flex;
   flex-direction: row;
