@@ -61,6 +61,7 @@ onMounted(() => {
     postContent.value = currentPost.value.content;
     simplemde.value(postContent.value);
     inlineAttachment.editors.codemirror4.attach(simplemde.codemirror, inlineAttachmentConfig);
+    document.querySelector('.editor-preview-side')!.classList.add('markdown-body');
   });
   const inlineAttachmentConfig = {
     uploadUrl: '/dev/api/files',
